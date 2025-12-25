@@ -1,47 +1,84 @@
-/* grupos.js - carga CSV de grupos usando PapaParse */
+
 async function cargarGrupos() {
-    // Cargar PapaParse desde CDN si no existe
-    if (!window.Papa) {
-        await new Promise(resolve => {
-            const script = document.createElement('script');
-            script.src = "https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js";
-            script.onload = resolve;
-            document.head.appendChild(script);
-        });
-    }
+    try {
 
-    //const url = "grupos.csv";
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkneeX1i0L31vjRvWlSYpDhzng_pjm8nTK0z52FMptoMAgo7Ed_FbQ6VxR9Dm-J3Hf0xxShkNuVLvW/pub?gid=781867427&single=true&output=csv";
-
-    Papa.parse(url, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-            const datos = results.data.map(e => ({
-                Grupo: e.Grupo,
-                Numero: e.Número,
-                Equipo: e.Equipo,
-                PJ: Number(e.PJ),
-                V: Number(e.V),
-                E: Number(e.E),
-                D: Number(e.D),
-                GF: Number(e.GF),
-                GC: Number(e.GC),
-                DG: Number(e.DG),
-                PTS: Number(e.PTS)
-            }));
-
-            pintarGrupo("A", datos);
-            pintarGrupo("B", datos);
-            pintarGrupo("C", datos);
+        if (!window.Papa) {
+            await new Promise(resolve => {
+                const script = document.createElement('script');
+                script.src = "https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js";
+                script.onload = resolve;
+                script.onerror = () => {
+                    console.error("Error al cargar PapaParse desde CDN.");
+                    resolve();
+                };
+                document.head.appendChild(script);
+            });
+            if (!window.Papa) {
+                console.error("PapaParse no está disponible después de intentar cargarlo.");
+                return;
+            }
         }
-    });
+
+
+        const urlGoogleSheets = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkneeX1i0L31vjRvWlSYpDhzng_pjm8nTK0z52FMptoMAgo7Ed_FbQ6VxR9Dm-J3Hf0xxShkNuVLvW/pub?gid=781867427&single=true&output=csv";
+
+        let csvData = null;
+
+        try {
+            csvData = await fetchCsv(urlGoogleSheets);
+        } catch (error) {
+            console.warn("No se pudo cargar CSV desde Google Sheets. Error:", error);
+        }
+
+        const parseResult = Papa.parse(csvData, {
+            header: true,
+            skipEmptyLines: true,
+            dynamicTyping: true,
+            delimiter: "",
+        });
+
+        if (parseResult.errors.length > 0) {
+            console.error("Errores al parsear CSV:", parseResult.errors);
+            return;
+        }
+
+        const datos = parseResult.data.map(e => ({
+            Grupo: e.Grupo,
+            Numero: e.Número || e.Numero,
+            Equipo: e.Equipo,
+            PJ: Number(e.PJ) || 0,
+            V: Number(e.V) || 0,
+            E: Number(e.E) || 0,
+            D: Number(e.D) || 0,
+            GF: Number(e.GF) || 0,
+            GC: Number(e.GC) || 0,
+            DG: Number(e.DG) || 0,
+            PTS: Number(e.PTS) || 0
+        }));
+
+        pintarGrupo("A", datos);
+        pintarGrupo("B", datos);
+        pintarGrupo("C", datos);
+
+    } catch (error) {
+        console.error("Error inesperado en cargarGrupos:", error);
+    }
+}
+
+async function fetchCsv(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Error al cargar CSV desde ${url}, status: ${response.status}`);
+    }
+    return await response.text();
 }
 
 function pintarGrupo(letra, datos) {
     const tabla = document.querySelector(`#grupo${letra} tbody`);
-    if (!tabla) return;
+    if (!tabla) {
+        console.warn(`No se encontró la tabla para el grupo ${letra}`);
+        return;
+    }
 
     tabla.innerHTML = "";
 
@@ -70,5 +107,8 @@ function pintarGrupo(letra, datos) {
         });
 }
 
-// Ejecutar al cargar la página
-document.addEventListener("DOMContentLoaded", cargarGrupos);
+document.addEventListener("DOMContentLoaded", () => {
+    cargarGrupos();
+
+    setInterval(cargarGrupos, 10000);
+});
