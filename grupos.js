@@ -10,7 +10,8 @@ async function cargarGrupos() {
         });
     }
 
-    const url = "grupos.csv";
+    //const url = "grupos.csv";
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkneeX1i0L31vjRvWlSYpDhzng_pjm8nTK0z52FMptoMAgo7Ed_FbQ6VxR9Dm-J3Hf0xxShkNuVLvW/pub?gid=781867427&single=true&output=csv";
 
     Papa.parse(url, {
         download: true,
