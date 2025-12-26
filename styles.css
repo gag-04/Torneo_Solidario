@@ -13,7 +13,7 @@ body {
     color: #333;
 }
 
-/* Header */
+
 header {
     background: var(--primary);
     color: white;
@@ -31,7 +31,7 @@ header {
     animation: pulse 2s infinite;
 }
 
-/* Navegación */
+
 nav {
     display: flex;
     background: white;
@@ -74,7 +74,7 @@ nav button.active {
     animation: slideIn 0.3s ease-out;
 }
 
-/* Tablas de Clasificación */
+
 .group-card {
     background: white;
     border-radius: 12px;
@@ -123,7 +123,7 @@ td {
     text-align: center;
 }
 
-/* Partidos */
+
 .match-card {
     background: white;
     border-radius: 10px;
@@ -151,7 +151,7 @@ td {
     margin-bottom: 5px;
 }
 
-/* Cuadro Final */
+
 .bracket {
     border-left: 3px solid var(--accent);
     padding-left: 15px;
@@ -164,6 +164,16 @@ td {
     color: var(--secondary);
     text-transform: uppercase;
     margin-bottom: 10px;
+}
+
+
+.group-card table th:first-child,
+.group-card table td:first-child {
+    width: 180px;           
+    max-width: 180px;
+    white-space: nowrap;    
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Animaciones */
