@@ -12,6 +12,9 @@ async function cargarPartidos() {
             const partidosEliminatorias = data.filter(p => p.Fase !== "Fase de Grupos");
 
             pintarPartidos(partidosGrupos);
+            pintarEliminatorias(partidosEliminatorias);
+        },
+    });
 }
 
 function pintarPartidos(partidos) {
@@ -54,6 +57,10 @@ function pintarPartidos(partidos) {
 }
 
 function pintarEliminatorias(partidos) {
+    const contenedor = document.getElementById("cuadro");
+    contenedor.innerHTML = "";
+
+    // Agrupar por fase
     const fases = {};
     partidos.forEach(p => {
         if (!fases[p.Fase]) fases[p.Fase] = [];
