@@ -83,6 +83,9 @@ nav button.active {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
+.clasificado { background-color: #83b5e6; }
+
+
 h3 {
     margin-top: 0;
     color: var(--primary);

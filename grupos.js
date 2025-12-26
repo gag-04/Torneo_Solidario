@@ -1,4 +1,3 @@
-
 async function cargarGrupos() {
     const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkneeX1i0L31vjRvWlSYpDhzng_pjm8nTK0z52FMptoMAgo7Ed_FbQ6VxR9Dm-J3Hf0xxShkNuVLvW/pub?gid=781867427&single=true&output=csv";
 
@@ -21,7 +20,8 @@ async function cargarGrupos() {
         GF: Number(e.GF) || 0,
         GC: Number(e.GC) || 0,
         DG: Number(e.DG) || 0,
-        PTS: Number(e.PTS) || 0
+        PTS: Number(e.PTS) || 0,
+        Clasificado: e.CLASIFICADO
     }));
 
     pintarGrupo("A", datos);
@@ -47,7 +47,7 @@ function pintarGrupo(letra, datos) {
     if (!tabla) {
         console.warn(`No se encontró la tabla para el grupo ${letra}`);
         return;
-    }
+    }       
 
     tabla.innerHTML = "";
 
@@ -58,9 +58,10 @@ function pintarGrupo(letra, datos) {
             b.DG - a.DG ||
             b.GF - a.GF
         )
-        .forEach(e => {
+        .forEach((e) => {
+            const clasificado = e.Clasificado === "TRUE" ? 'clasificado' : '';
             const fila = `
-                <tr>
+                <tr class="${clasificado}">
                     <td class="team">${e.Equipo}</td>
                     <td class="center">${e.PJ}</td>
                     <td class="center">${e.V}</td>
