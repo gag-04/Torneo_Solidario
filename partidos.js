@@ -79,7 +79,12 @@ function pintarEliminatorias(partidos) {
                 const marcador =
                     p.GolesL && p.GolesV
                         ? `${p.GolesL} - ${p.GolesV}`
-                        : "-";
+                        : "";
+
+                const penaltis =
+                    p.PenaltisL && p.PenaltisV
+                        ? `<div class="penaltis">(${p.PenaltisL} - ${p.PenaltisV})</div>`
+                        : "";
 
                 const div = document.createElement("div");
                 div.className = "match-card";
@@ -87,7 +92,8 @@ function pintarEliminatorias(partidos) {
                     <span>${p.Local}</span>
                     <div class="score-box">
                         <span class="hora">${p.Hora || ""}</span>
-                        <span class="score">${marcador}</span>
+                        <span class="score">${marcador || "-"}</span>
+                        ${penaltis}
                     </div>
                     <span>${p.Visitante}</span>
                 `;
